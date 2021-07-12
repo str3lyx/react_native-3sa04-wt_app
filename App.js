@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar'
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import Weather from './Components/Weather.js'
+import WeatherScreen from './Components/WeatherScreen.js';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -14,31 +14,8 @@ export default function App() {
         <NavigationContainer>
             <Stack.Navigator>
                 <Stack.Screen name="Home" component={ZipCodeScreen} />
+                <Stack.Screen name="Weather" component={WeatherScreen} />
             </Stack.Navigator>
         </NavigationContainer> 
     )
 }
-
-/*
-export default function App() {
-    const doIt = () => {
-        console.log("Hello from console")
-    }
-    
-    return (
-        <View style={styles.container}>
-            <Weather zipCode="92000"></Weather>
-            <StatusBar style="auto" />
-        </View>
-    )
-}
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    }
-});
-*/
