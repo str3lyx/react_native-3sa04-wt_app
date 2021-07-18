@@ -39,40 +39,48 @@ export default function Weather(props) {
     else if(d >= 5 && d < 6)
         sky = 'https://thumbs.dreamstime.com/b/clear-sunset-sky-view-94428312.jpg'
     return (
-        <ImageBackground source={{uri: sky}} style={styles.black_bar}>
-            <Text style={styles.des_text}>{props.place}</Text>
-            <View style={styles.tab}>
-                <View style={styles.left}>
-                    <Text style={styles.date}>{DateTime()}</Text>
-                    <View style={styles.temperature}>
-                        <Text style={styles.number}>{forecastInfo.temp}</Text>
-                        <Text style={styles.text}>°C</Text>
+        <View style={styles.wea}>
+            <ImageBackground source={{uri: sky}} style={styles.black_bar}>
+                <Text style={styles.des_text}>{props.place}</Text>
+                <View style={styles.tab}>
+                    <View style={styles.left}>
+                        <Text style={styles.date}>{DateTime()}</Text>
+                        <View style={styles.temperature}>
+                            <Text style={styles.number}>{forecastInfo.temp}</Text>
+                            <Text style={styles.text}>°C</Text>
+                        </View>
+                        <Text style={styles.des_text}>อุณหภูมิที่รู้สึก {forecastInfo.feel} °C</Text>
                     </View>
-                    <Text style={styles.des_text}>อุณหภูมิที่รู้สึก {forecastInfo.feel} °C</Text>
+                    <View style={styles.right}>
+                        <Image source={img} style={styles.icon} />
+                        <Text style={styles.description}>{forecastInfo.description}</Text>
+                    </View>
                 </View>
-                <View style={styles.right}>
-                    <Image source={img} style={styles.icon} />
-                    <Text style={styles.description}>{forecastInfo.description}</Text>
-                </View>
-            </View>
-        </ImageBackground>
+            </ImageBackground>
+        </View>
     )
 }
 
 const styles = StyleSheet.create({
+    wea: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        width: '100%'
+    },
     black_bar: {
         width: '100%',
         height: 480,
-        padding: 24
+        paddingTop: 15
     },
     left: {
-        width:  '80%',
+        width:  '60%',
         flexDirection: 'column',
         alignItems: 'flex-start',
         justifyContent: 'flex-end'
     },
     right: {
-        width: 260,
+        width: '30%',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'flex-end'
@@ -90,7 +98,7 @@ const styles = StyleSheet.create({
     temperature: {
         flexDirection: 'row',
         alignItems: 'center',
-        width: '70%'
+        width: '100%'
     },
     number: {
         color: 'white',

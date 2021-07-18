@@ -9,7 +9,7 @@ export default function WeatherScreen({route}) {
     return (
         <View>
             <StatusBar style={"auto"}/>
-            <Weather place={route.params.place} zipCode={route.params.zipCode} style={styles.screen}/>
+            <Weather place={route.params.place} zipCode={route.params.zipCode} />
             <Forecast zipCode={route.params.zipCode}></Forecast>
         </View>
     )

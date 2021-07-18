@@ -1,154 +1,102 @@
-import React from 'react'
-import { FlatList, View, Text, TouchableHighlight, StyleSheet, TextInput, Image } from 'react-native'
+import React, { useState } from 'react'
+import { FlatList, View, Text, TouchableHighlight, StyleSheet, TextInput } from 'react-native'
 import { StatusBar } from 'expo-status-bar'
 import { useNavigation } from '@react-navigation/native'
+import Location from '../assets/locations.json'
 
-function normalSorting(a,b)
-{
-    if(a["zip"] == b["zip"]) return 0
-    return a["zip"] > b["zip"] ? 1 : -1
-}
+const ZipItem = ({province, district, code, navigation}) => (
+    <TouchableHighlight onPress={() => navigation.navigate('Weather', { zipCode: code, place: district + ", " + province })}>
+        <View style={styles.list_card}>
+            <Text style={styles.place}>{district + ", " + province}</Text>
+            <Text style={styles.code}>{code}</Text>
+        </View>
+    </TouchableHighlight>
+)
 
-class ZipScreen extends React.Component {
+const _keyExtractor = item => item.zip
 
-    constructor() {
-        super()
-
-        this.state = {}
-        this.tmpData = []
-        this.getRemoteData()
-    }
-
-    static navigatorOptions = {
-        title: 'Home'
-    }
-
-    getRemoteData = () => {
-        fetch('https://raw.githubusercontent.com/rathpanyowat/Thai-zip-code-latitude-and-longitude/master/data.json')
-        .then((response) => response.json())
-        .then((json) => {
-
-            var tdata = []
-            for(let obj of json)
+export default function ZipCodeScreen(){
+    const getData = () => {
+        var json = JSON.parse(JSON.stringify(Location))
+        var savedData = []
+        for(var obj of json)
+        {
+            var success = true
+            for(var re of savedData)
             {
-                var isSuccess = true
-                for(var remain of tdata)
+                if(re["zip"] == obj["zip"])
                 {
-                    if(obj["province"] == remain["province"])
-                    {
-                        isSuccess = false
-                        break
-                    }
-                }
-
-                if(isSuccess)
-                {
-                    tdata.push({
-                        province: obj["province"],
-                        zip: obj["zip"],
-                        district: obj["district"]
-                    })
+                    success = false
+                    break;
                 }
             }
-            this.setState({
-                data: tdata
-            })
-            this.tmpData = tdata
-        })
-    }
 
-    onInput = (event) => {
+            if(success)
+            {
+                savedData.push(obj)
+            }
+
+        }
+        return savedData
+    }
+    const [data, setData] = useState(getData())
+    const navigation = useNavigation()
+
+    const onInput = (event) => {
+        console.log(event)
         if(event == "") {
-            this.setState({
-                data : this.tmpData.sort(normalSorting)
-            })
+            setData(getData().sort(function(a,b){
+                if(a["zip"] == b["zip"])
+                    return 0;
+                return a["zip"] > b["zip"] ? 1 : -1
+            }))
         }
         else {
-            var list = this.tmpData 
+            var list = getData()
             var new_list = []
             for(let i in list)
             {
                 var obj = list[i]
-                if(obj["zip"].search(event) >= 0 || obj["province"].search(event) >= 0 || obj["district"].search(event) >= 0)
+                if(obj["province"].search(event) >= 0 || obj["district"].search(event) >= 0 || obj["zip"].search(event) >= 0)
                 {
                     new_list.push(obj)
                 }
             }
 
-            this.setState({
-                data : new_list.sort(normalSorting)
-            })
+            setData(new_list.sort(function(a,b){
+                if(a["zip"] == b["zip"])
+                    return 0;
+                return a["zip"] > b["zip"] ? 1 : -1
+            }))
         }
     }
 
-    renderNativeItem = (item) => {
-        var place = item["district"] + ", " + item["province"]
-        var code = item["zip"]
-
-        return (
-            <TouchableHighlight onPress={() => this.props.navigation.navigate('Weather', { zipCode: code, place: place })}>
-                <View style={styles.list_card}>
-                    <View style={styles.inner_card}>
-                        <View style={styles.infor}>
-                            <Text style={styles.place}>{place}</Text>
-                            <Text style={styles.code}>{code}</Text>
-                        </View>
-                    </View>
-                </View>
-            </TouchableHighlight>
-        )
-    }
-
-    render() {
-
-        const _key = item => item.code;
-
-        return (
-            <View style={styles.main}>
+    return (
+        <View>
             <StatusBar style="auto" />
             <View style={styles.input_bar}>
                 <TextInput
                     style={styles.input}
                     placeholder="ค้นหาสถานที่"
-                    onChangeText={this.onInput}
+                    onChangeText={onInput}
                 />
             </View>
-            <View nativeID="list" style={styles.flatlist}>
+            <View nativeID="list">
                 <FlatList
-                    data={this.state.data}
-                    keyExtractor={_key}
-                    renderItem={({item}) => this.renderNativeItem(item)}
+                    data={data}
+                    keyExtractor={_keyExtractor}
+                    renderItem={({item}) => <ZipItem province={item.province} district={item.district} code={item.zip} navigation={navigation} />}
                 />
             </View>
         </View>
-        )
-    }
-}
-
-export default function ZipCodeScreen()
-{
-    const nav = useNavigation()
-    return (
-        <ZipScreen navigation={nav}></ZipScreen>
     )
 }
 
 const styles = StyleSheet.create({
-    main: {
-        backgroundColor: 'white'
-    },
-    infor: {
-        width: '90%'
-    },
-    icon: {
-        width: 64,
-        height: 64
-    },
     input_bar: {
         width: '100%',
         backgroundColor: '#dedede',
         height: 65,
-        position: 'absolute',
         alignItems: 'center',
         justifyContent: 'center'
     },
@@ -158,16 +106,11 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderColor: 'gray',
         borderWidth: 2,
-        paddingLeft: 15,
-        paddingRight: 15,
+        paddingLeft: '1%',
+        paddingRight: '1%',
         borderRadius: 100,
         height: '60%',
         width: '95%',
-    },
-    flatlist: {
-        position: 'absolute',
-        width: '100%',
-        top: 65
     },
     list_card : {
         justifyContent: 'center',
@@ -175,28 +118,16 @@ const styles = StyleSheet.create({
         width: '100%',
         paddingLeft: 10,
         paddingRight: 10,
-        height: 90,
-        backgroundColor: '#f2f2f2'
-    },
-    inner_card : {
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%',
-        paddingLeft: 10,
-        paddingRight: 10,
-        height: 70,
-        flexDirection: 'row',
-        borderRadius: 7,
-        backgroundColor: 'white'
+        height: 50,
+        flexDirection: 'row'
     },
     place: {
-        textAlign: 'left',
-        color: 'black',
-        fontSize: 16,
-        fontWeight: 'bold'
+        width: '50%',
+        textAlign: 'left'
     },
     code: {
-        textAlign: 'left',
+        width: '50%',
+        textAlign: 'right',
         color: '#131313'
     }
-})
+}) 
