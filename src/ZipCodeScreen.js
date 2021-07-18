@@ -69,13 +69,6 @@ export default function ZipCodeScreen(){
     return (
         <View>
             <StatusBar style="auto" />
-            <View nativeID="list">
-                <FlatList
-                    data={data}
-                    keyExtractor={_keyExtractor}
-                    renderItem={({item}) => <ZipItem place={item.province} code={item.zip} navigation={navigation} />}
-                />
-            </View>
             <View style={styles.input_bar}>
                 <TextInput
                     style={styles.input}
@@ -86,6 +79,13 @@ export default function ZipCodeScreen(){
                     onChangeText={onInput}
                 />
             </View>
+            <View nativeID="list" style={styles.flatlist}>
+                <FlatList
+                    data={data}
+                    keyExtractor={_keyExtractor}
+                    renderItem={({item}) => <ZipItem place={item.province} code={item.zip} navigation={navigation} />}
+                />
+            </View>
         </View>
     )
 }
@@ -94,9 +94,8 @@ const styles = StyleSheet.create({
     input_bar: {
         width: '100%',
         backgroundColor: '#dedede',
-        height: '10%',
-        position: 'fixed',
-        top: '90%',
+        height: 65,
+        position: 'absolute',
         alignItems: 'center',
         justifyContent: 'center'
     },
@@ -106,13 +105,16 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderColor: 'gray',
         borderWidth: 2,
-        paddingLeft: '1%',
-        paddingRight: '1%',
-        wordWrap: 'break-word',
-        wordBreak: 'break-all',
-        borderRadius: '100px',
+        paddingLeft: 15,
+        paddingRight: 15,
+        borderRadius: 100,
         height: '60%',
         width: '95%',
+    },
+    flatlist: {
+        position: 'absolute',
+        width: '100%',
+        top: 65
     },
     list_card : {
         justifyContent: 'center',
@@ -120,7 +122,7 @@ const styles = StyleSheet.create({
         width: '100%',
         paddingLeft: 10,
         paddingRight: 10,
-        height: '50px',
+        height: 50,
         flexDirection: 'row'
     },
     place: {
