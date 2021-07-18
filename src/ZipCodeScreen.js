@@ -1,8 +1,7 @@
 import React from 'react'
 import { FlatList, View, Text, TouchableHighlight, StyleSheet, TextInput, Image } from 'react-native'
 import { StatusBar } from 'expo-status-bar'
-
-import IconFetcher from './Utils/IconFetcher.js'
+import { useNavigation } from '@react-navigation/native'
 
 function normalSorting(a,b)
 {
@@ -10,12 +9,12 @@ function normalSorting(a,b)
     return a["zip"] > b["zip"] ? 1 : -1
 }
 
-class ZipCodeScreen extends React.Component {
+class ZipScreen extends React.Component {
 
     constructor() {
         super()
 
-        this.state = []
+        this.state = {}
         this.tmpData = []
         this.getRemoteData()
     }
@@ -87,14 +86,13 @@ class ZipCodeScreen extends React.Component {
         var code = item["zip"]
 
         return (
-            <TouchableHighlight onPress={() => this.props.navigation.navigate('Weather', { zipCode: code})}>
+            <TouchableHighlight onPress={() => this.props.navigation.navigate('Weather', { zipCode: code, place: place })}>
                 <View style={styles.list_card}>
                     <View style={styles.inner_card}>
                         <View style={styles.infor}>
                             <Text style={styles.place}>{place}</Text>
                             <Text style={styles.code}>{code}</Text>
                         </View>
-                        <IconFetcher zipCode={code} style={styles.icon} />
                     </View>
                 </View>
             </TouchableHighlight>
@@ -102,6 +100,9 @@ class ZipCodeScreen extends React.Component {
     }
 
     render() {
+
+        const _key = item => item.code;
+
         return (
             <View style={styles.main}>
             <StatusBar style="auto" />
@@ -115,6 +116,7 @@ class ZipCodeScreen extends React.Component {
             <View nativeID="list" style={styles.flatlist}>
                 <FlatList
                     data={this.state.data}
+                    keyExtractor={_key}
                     renderItem={({item}) => this.renderNativeItem(item)}
                 />
             </View>
@@ -123,7 +125,13 @@ class ZipCodeScreen extends React.Component {
     }
 }
 
-export default ZipCodeScreen
+export default function ZipCodeScreen()
+{
+    const nav = useNavigation()
+    return (
+        <ZipScreen navigation={nav}></ZipScreen>
+    )
+}
 
 const styles = StyleSheet.create({
     main: {

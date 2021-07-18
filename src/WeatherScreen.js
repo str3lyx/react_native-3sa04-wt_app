@@ -1,17 +1,16 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, View, Dimensions } from 'react-native';
 import Weather from './Weather.js';
 import { StatusBar } from 'expo-status-bar'
+import Forecast from './Forecast.js';
 
 export default function WeatherScreen({route}) {
-
-    var test = 0
-    console.log(Dimensions.get('window').height)
 
     return (
         <View>
             <StatusBar style={"auto"}/>
-            <Weather zipCode={route.params.zipCode} style={styles.screen}/>
+            <Weather place={route.params.place} zipCode={route.params.zipCode} style={styles.screen}/>
+            <Forecast zipCode={route.params.zipCode}></Forecast>
         </View>
     )
 }

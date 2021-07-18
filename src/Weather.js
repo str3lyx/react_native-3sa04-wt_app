@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { Text, StyleSheet, View, Image } from 'react-native';
+import { Text, StyleSheet, View, Image, ImageBackground } from 'react-native';
 
 import { DateTime } from './Utils/DateTime.js'
 
 export default function Weather(props) {
     const [forecastInfo, setForecastInfo] = useState({
-        description: '-',
-        temp: 0,
-        feel: 0,
-        icon: '10d'
+        description: 'ไม่สามารถเข้าถึงข้อมูลได้',
+        temp: 'N/A',
+        feel: 'N/A',
+        icon: '-1'
     })
 
     useEffect(() => {
@@ -31,42 +31,56 @@ export default function Weather(props) {
         }
     }, [props.zipCode])
 
+    var img = forecastInfo.icon == '-1' ? require('../assets/na.png') : {uri:`http://openweathermap.org/img/wn/${forecastInfo.icon}@2x.png`}
+    var d = new Date().getHours()
+    var sky = d >=6 && d < 18 ? 'https://images.financialexpress.com/2020/04/sky1200.jpg?w=1200&h=800&imflag=true' : 'https://img.freepik.com/free-photo/sky-astrology-cosmos-galaxy-starry_53876-31009.jpg?size=626&ext=jpg'
+    if(d >= 17 && d < 19)
+        sky = 'https://www.teahub.io/photos/full/121-1213644_photo-wallpaper-dark-twilight-sky-nature-sunset-sunset.jpg'
+    else if(d >= 5 && d < 6)
+        sky = 'https://thumbs.dreamstime.com/b/clear-sunset-sky-view-94428312.jpg'
     return (
-        <View style={styles.black_bar}>
-            <Text style={styles.date}>{DateTime()}</Text>
-            <View style={styles.tabTemp}>
-                <View style={styles.temperature}>
-                    <Text style={styles.number}>{forecastInfo.temp}</Text>
-                    <Text style={styles.text}>°C</Text>
-                </View>
-                <View>
-                    <Image source={{uri:`http://openweathermap.org/img/wn/${forecastInfo.icon}@2x.png`}} style={styles.icon} />
-                </View>
-            </View>
+        <ImageBackground source={{uri: sky}} style={styles.black_bar}>
+            <Text style={styles.des_text}>{props.place}</Text>
             <View style={styles.tab}>
-                <Text style={styles.des_text}>อุณหภูมิที่รู้สึก {forecastInfo.feel} °C</Text>
-                <Text style={styles.description}>{forecastInfo.description}</Text>
+                <View style={styles.left}>
+                    <Text style={styles.date}>{DateTime()}</Text>
+                    <View style={styles.temperature}>
+                        <Text style={styles.number}>{forecastInfo.temp}</Text>
+                        <Text style={styles.text}>°C</Text>
+                    </View>
+                    <Text style={styles.des_text}>อุณหภูมิที่รู้สึก {forecastInfo.feel} °C</Text>
+                </View>
+                <View style={styles.right}>
+                    <Image source={img} style={styles.icon} />
+                    <Text style={styles.description}>{forecastInfo.description}</Text>
+                </View>
             </View>
-        </View>
+        </ImageBackground>
     )
 }
 
 const styles = StyleSheet.create({
     black_bar: {
-        backgroundColor: 'rgba(0,0,0,0.5)',
         width: '100%',
         height: 480,
         padding: 24
     },
+    left: {
+        width:  '80%',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        justifyContent: 'flex-end'
+    },
+    right: {
+        width: 260,
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'flex-end'
+    },
     tab: {
         flexDirection: 'row',
         alignItems: 'center',
-        width: '100%'
-    },
-    tabTemp: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
+        justifyContent: 'center',
         width: '100%'
     },
     icon: {
@@ -102,7 +116,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 14,
         textAlign: 'right',
-        width: '50%'
+        width: '50%',
+        textAlign: 'center'
     },
     date: {
         marginBottom: -15,
