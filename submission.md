@@ -22,6 +22,7 @@
 
 ## [Commit #4 tweak weather screen by adding information](https://github.com/suttirak-mattaya/react_native-3sa04-wt_app/commit/f90ed8eb027451cf0a213ae9b6ca209ef2a9f694)
 - เพิ่มข้อมูลในหน้า Weather ให้แสดง ความเร็ว, ทิศทางลม ความชื้น และความดันบรรยากาศ
+- พื้นหลังหน้า Weather เปลี่ยนเป็น 4 ช่วง เช้า, กลางวัน, เย็น, กลางคืน
 
 ## [Commit #5 fix untouchable zipcodescreen issue on android](https://github.com/suttirak-mattaya/react_native-3sa04-wt_app/commit/8fb6777897e9c58fa64a477836cb8bea6896019b)
 - เปลี่ยนระบบในหน้า `ZipCodeScreen` กลับมาเป็น `function`
